@@ -47,8 +47,9 @@ class NFA:
                 continue
             conf = tempconf
             if conf[1] == "":
-                if conf[0] in self.final:
-                    return True
+                for s in self.closure(conf[0]):
+                    if s in self.final:
+                        return True
             else:
                 for state in self._move(self.closure(conf[0]), conf[1][0]):
                     agenda.append((state, conf[1][1:]))
@@ -89,23 +90,28 @@ class NFA:
         # return DFA(start, final, transitions)
         start_closure = self.closure(self.start)
         final = []
-        agenda = []
+        agenda = dict()
         label = 0
-        agenda.append((start_closure,label))
+        agenda[start_closure] = label
         k = dict()
         transitions = list()
         while agenda:
             # mark T
-            t = agenda.pop()
-            k[t[0]] = t[1] 
+            (key, value) = agenda.popitem()
+            # copy to already processed list
+            k[key] = value  
             for char in self.alphabet():
-                u = self._closure(self._move(t[0], char))
-                if u not in k:
-                    label = label + 1
-                    agenda.append((u, label))
-                    transitions.append((t[1], char, label))
-                else:
-                    transitions.append((t[1], char, k[u]))
+                u = self._closure(self._move(key, char))
+                if u:
+                    if u not in k and u not in agenda:
+                        label = label + 1
+                        agenda[u] = label
+                        transitions.append((value, char, label))
+                    else:
+                        try:
+                            transitions.append((value, char, k[u]))
+                        except KeyError:
+                            transitions.append((value, char, agenda[u]))
         for f in self.final:
             final.extend([k[state] for state in k if f in state])
         start = k[start_closure]
@@ -113,9 +119,9 @@ class NFA:
 
 
 def test_nfa():
-    nfa = NFA(0, [0, 2], [(0,'',1), (0, 'a', 1), (1, 'b', 2), (2, 'a', 1), (1, 'b', 3), (3, 'a', 2)])
+    nfa = NFA(0, [0, 2], [(0,'',1), (1, '' ,1), (0, 'a', 1), (1, 'b', 2), (2, 'a', 1), (1, 'b', 3), (3, 'a', 2)])
     dfa = nfa.dfa()
-    for test in ['b', 'ab', 'aba', 'abaaba', 'abba', 'aabab']:
+    for test in ['a', 'b', 'ab', 'aba', 'abaaba', 'abba', 'aabab']:
         print(test, nfa.recognize(test), dfa.recognize(test))
 
 if __name__ == '__main__':
