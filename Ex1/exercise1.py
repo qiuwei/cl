@@ -50,7 +50,7 @@ class NFA:
                 if conf[0] in self.final:
                     return True
             else:
-                for state in self._move([conf[0]], conf[1][0]):
+                for state in self._move(self.closure(conf[0]), conf[1][0]):
                     agenda.append((state, conf[1][1:]))
         return False
 
@@ -113,9 +113,9 @@ class NFA:
 
 
 def test_nfa():
-    nfa = NFA(0, [0, 2], [(0, 'a', 1), (1, 'b', 2), (2, 'a', 1), (1, 'b', 3), (3, 'a', 2)])
+    nfa = NFA(0, [0, 2], [(0,'',1), (0, 'a', 1), (1, 'b', 2), (2, 'a', 1), (1, 'b', 3), (3, 'a', 2)])
     dfa = nfa.dfa()
-    for test in ['ab', 'aba', 'abaaba', 'abba', 'aabab']:
+    for test in ['b', 'ab', 'aba', 'abaaba', 'abba', 'aabab']:
         print(test, nfa.recognize(test), dfa.recognize(test))
 
 if __name__ == '__main__':
