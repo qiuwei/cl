@@ -76,7 +76,7 @@ def binarize (rules,method='left'):
 def show(binarized_rules):
     strings = []
     for rule in binarized_rules:
-        strings.append(rule[0]+'\t'+rule[1][0]+'\t'+rule[1][1]+'\n')   
+        strings.append(rule[0]+'\t'+rule[1][0]+'\t'+rule[1][1])   
     return strings 
         
 if __name__ == '__main__':
