@@ -84,7 +84,6 @@ class PCYKParser(object):
                                         #print self.chart[start_pos][start_pos + len_chart - 1][i][0][1]
                                         if r1[0][1] + r2[0][1] + leftitem[1] > self.chart[start_pos][start_pos + len_chart - 1][i][0][1]:
                                             self.chart[start_pos][start_pos + len_chart - 1][i] = [[leftitem[0], r1[0][1] + r2[0][1] + leftitem[1]], mid_pos, r1[0], r2[0]]
-                                            print "find a new parse with higher probability"
                                     except ValueError:
                                         #print "Value Error"
                                         self.chart[start_pos][start_pos + len_chart - 1].append([[leftitem[0], r1[0][1] + r2[0][1] + leftitem[1]], mid_pos, r1[0], r2[0]])
