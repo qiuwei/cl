@@ -78,11 +78,16 @@ class PCYKParser(object):
                                 for leftitem in left:
                                     try:
                                         i = map(lambda x: x[0][0], self.chart[start_pos][start_pos + len_chart-1]).index(leftitem[0])
+                                        #print "no value error"
                                         # if we find a more possible substring parse, then replace the parsing result
+                                        #print r1[0][1] + r2[0][1] + leftitem[1] 
+                                        #print self.chart[start_pos][start_pos + len_chart - 1][i][0][1]
                                         if r1[0][1] + r2[0][1] + leftitem[1] > self.chart[start_pos][start_pos + len_chart - 1][i][0][1]:
-                                            self.chart[start_pos][start_pos + len_chart - 1][i] = [leftitem, mid_pos, r1[0], r2[0]]
+                                            self.chart[start_pos][start_pos + len_chart - 1][i] = [[leftitem[0], r1[0][1] + r2[0][1] + leftitem[1]], mid_pos, r1[0], r2[0]]
+                                            print "find a new parse with higher probability"
                                     except ValueError:
-                                        self.chart[start_pos][start_pos + len_chart - 1].append([leftitem, mid_pos, r1[0], r2[0]])
+                                        #print "Value Error"
+                                        self.chart[start_pos][start_pos + len_chart - 1].append([[leftitem[0], r1[0][1] + r2[0][1] + leftitem[1]], mid_pos, r1[0], r2[0]])
  
     def parse(self, sentence, verbose='T'):
         self._parse(sentence)
